@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tibia/Fibula ORIF Recovery Timeline</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> <!-- Font Awesome for Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Malayalam:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet"> <!-- Google Fonts -->
+    <style>
+        /* Embedded CSS */
+        :root {
+            --primary-color: #007bff; /* Blue */
+            --secondary-color: #6c757d; /* Grey */
+            --light-grey: #f8f9fa;
+            --dark-grey: #343a40;
+            --progress-color: #28a745; /* Green */
+            --malayalam-font: 'Noto Sans Malayalam', sans-serif;
+            --english-font: 'Poppins', sans-serif;
+        }
+
+        body {
+            font-family: var(--english-font);
+            margin: 0;
+            padding: 20px;
+            background-color: var(--light-grey);
+            color: var(--dark-grey);
+            line-height: 1.6;
+        }
+
+        .timeline-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+        }
+
+        .timeline {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 0;
+            margin-bottom: 40px;
+            /* The connecting line */
+            &::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 5%; /* Adjust start padding */
+                right: 5%; /* Adjust end padding */
+                height: 4px;
+                background-color: #e9ecef;
+                transform: translateY(-50%);
+                z-index: 1;
+            }
+        }
+
+         /* Progress bar overlay */
+        .timeline-progress {
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            height: 4px;
+            background-color: var(--progress-color);
+            width: 0; /* Starts at 0, controlled by JS */
+            transform: translateY(-50%);
+            z-index: 2;
+            transition: width 0.5s ease-in-out;
+        }
+
+        .timeline-stage {
+            position: relative;
+            width: 15%; /* Adjust based on number of stages */
+            text-align: center;
+            z-index: 3;
+            cursor: pointer;
+        }
+
+        .stage-icon-wrapper {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #fff;
+            border: 3px solid var(--secondary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+
+        .timeline-stage i {
+            font-size: 20px;
+            color: var(--secondary-color);
+            transition: color 0.3s;
+        }
+
+        .stage-label {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: var(--secondary-color);
+            transition: color 0.3s;
+        }
+
+        /* Active/Hover states */
+        .timeline-stage.active .stage-icon-wrapper,
+        .timeline-stage:hover .stage-icon-wrapper {
+            border-color: var(--primary-color);
+            transform: scale(1.1);
+        }
+        .timeline-stage.active i,
+        .timeline-stage:hover i {
+            color: var(--primary-color);
+        }
+         .timeline-stage.active .stage-label,
+         .timeline-stage:hover .stage-label {
+             color: var(--primary-color);
+         }
+
+
+        .stage-details {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background-color: #fff;
+            display: none; /* Hidden by default */
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .stage-details.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .stage-details h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .lang-en, .lang-ml {
+            margin-bottom: 15px;
+        }
+        .lang-en strong, .lang-ml strong {
+             display: block;
+             margin-bottom: 5px;
+             font-weight: 600;
+             color: var(--dark-grey);
+        }
+
+        .lang-ml {
+            font-family: var(--malayalam-font);
+            font-size: 1.1em; /* Adjust as needed for readability */
+        }
+        .lang-ml strong {
+             font-weight: 700; /* Bolder for Malayalam heading */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .timeline {
+                flex-direction: column;
+                align-items: center;
+                padding: 0;
+                &::before { /* Vertical line */
+                    left: 50%;
+                    top: 5%;
+                    bottom: 5%;
+                    width: 4px;
+                    height: auto; /* Auto height for vertical */
+                    right: auto;
+                    transform: translateX(-50%);
+                }
+            }
+            .timeline-progress { /* Vertical progress */
+                 left: 50%;
+                 top: 5%;
+                 width: 4px;
+                 height: 0; /* Start height 0 */
+                 transform: translateX(-50%);
+                 transition: height 0.5s ease-in-out; /* Transition height */
+            }
+            .timeline-stage {
+                width: 80%;
+                margin-bottom: 30px;
+                display: flex;
+                align-items: center;
+                text-align: left;
+            }
+             .stage-icon-wrapper {
+                 margin-right: 15px;
+                 margin-bottom: 0;
+             }
+             .timeline-stage:last-child {
+                 margin-bottom: 0;
+             }
+        }
+         @media (max-width: 480px) {
+              body { padding: 10px; }
+              .timeline-container { padding: 15px; margin: 20px auto; }
+              h1 { font-size: 1.5em; }
+         }
+
+    </style>
+</head>
+<body>
+
+    <div class="timeline-container">
+        <h1>Post-ORIF Tibia/Fibula Recovery Journey</h1>
+        <p style="text-align: center; margin-bottom: 30px;">Click on a stage to see details.</p>
+
+        <div class="timeline">
+             <div class="timeline-progress"></div> <!-- Progress bar element -->
+            <!-- Stage 1: Day 1-3 -->
+            <div class="timeline-stage" data-stage="1">
+                <div class="stage-icon-wrapper"><i class="fas fa-bed"></i></div>
+                <div class="stage-label">Day 1-3</div>
+            </div>
+
+            <!-- Stage 2: Week 1-2 -->
+            <div class="timeline-stage" data-stage="2">
+                <div class="stage-icon-wrapper"><i class="fas fa-crutch"></i></div>
+                <div class="stage-label">Week 1-2</div>
+            </div>
+
+            <!-- Stage 3: Week 3-6 -->
+            <div class="timeline-stage" data-stage="3">
+                <div class="stage-icon-wrapper"><i class="fas fa-x-ray"></i></div>
+                <div class="stage-label">Week 3-6</div>
+            </div>
+
+            <!-- Stage 4: Week 6-12 -->
+            <div class="timeline-stage" data-stage="4">
+                <div class="stage-icon-wrapper"><i class="fas fa-dumbbell"></i></div>
+                <div class="stage-label">Week 6-12</div>
+            </div>
+
+            <!-- Stage 5: Month 3-6 -->
+            <div class="timeline-stage" data-stage="5">
+                <div class="stage-icon-wrapper"><i class="fas fa-walking"></i></div>
+                <div class="stage-label">Month 3-6</div>
+            </div>
+
+            <!-- Stage 6: Month 6 - 1 Year -->
+            <div class="timeline-stage" data-stage="6">
+                <div class="stage-icon-wrapper"><i class="fas fa-check-circle"></i></div>
+                <div class="stage-label">6 Months - 1 Year</div>
+            </div>
+        </div>
+
+        <!-- Details Sections (Initially Hidden) -->
+        <div id="details-stage-1" class="stage-details">
+            <h3>Stage 1: Day 1–3 - Initial Rest & Care</h3>
+            <div class="lang-en">
+                <strong>English Summary:</strong>
+                <p>Strict rest. Apply ice packs to the ankle/leg for 15–20 minutes every 4 hours to manage swelling. Follow doctor's instructions precisely for wound dressing changes.</p>
+            </div>
+            <hr>
+            <div class="lang-ml">
+                <strong>മലയാള സംഗ്രഹം (Malayalam Summary):</strong>
+                <p>🛌 വിശ്രമം കർശനമായി പാലിക്കുക. 🧊 വീക്കം കുറയ്ക്കാൻ കണങ്കാൽ/കാലിൽ ഓരോ 4 മണിക്കൂറിലും 15–20 മിനിറ്റ് ഐസ് പായ്ക്ക് വെക്കുക. 🩹 മുറിവിലെ ഡ്രസ്സിംഗ് മാറ്റുന്നത് ഡോക്ടർ നിർദ്ദേശിച്ചതുപോലെ മാത്രം ചെയ്യുക.</p>
+            </div>
+        </div>
+
+        <div id="details-stage-2" class="stage-details">
+            <h3>Stage 2: Week 1–2 - Pain Management & Non-Weight Bearing</h3>
+            <div class="lang-en">
+                <strong>English Summary:</strong>
+                <p>Manage pain using prescribed medications (NSAIDs or others). Absolutely no weight bearing on the operated leg. Use walker or crutches for mobility. Keep the leg elevated as much as possible to reduce swelling.</p>
+            </div>
+             <hr>
+            <div class="lang-ml">
+                <strong>മലയാള സംഗ്രഹം (Malayalam Summary):</strong>
+                <p>💉 വേദന നിയന്ത്രിക്കാൻ നിർദ്ദേശിച്ച മരുന്നുകൾ (NSAIDs / മറ്റ് മരുന്നുകൾ) കഴിക്കുക. 🚫 ഓപ്പറേഷൻ ചെയ്ത കാലിൽ ഭാരം കൊടുക്കരുത്. നടക്കാൻ വാക്കർ/ക്രച്ചസ് ഉപയോഗിക്കുക. 👣 നീർക്കെട്ട് കുറയ്ക്കാൻ കാൽ മിക്കവാറും സമയം ഉയർത്തി വെക്കുക.</p>
+            </div>
+        </div>
+
+        <div id="details-stage-3" class="stage-details">
+             <h3>Stage 3: Week 3–6 - Healing Assessment & Early Mobilization</h3>
+             <div class="lang-en">
+                <strong>English Summary:</strong>
+                 <p>Attend follow-up appointment for an X-ray. The doctor will assess bone healing. If healing is adequate, you may be allowed to start partial weight bearing. Begin physiotherapy focusing on ankle and knee Range of Motion (ROM) exercises.</p>
+             </div>
+              <hr>
+             <div class="lang-ml">
+                 <strong>മലയാള സംഗ്രഹം (Malayalam Summary):</strong>
+                 <p>🏥 ഫോളോ-അപ്പ് അപ്പോയിന്റ്മെന്റിൽ X-ray എടുക്കുക. 👨‍⚕️ എല്ലുകൾ കൂടുന്നുണ്ടോ എന്ന് ഡോക്ടർ വിലയിരുത്തും. ⚖️ എല്ലുകൂടൽ തൃപ്തികരമാണെങ്കിൽ, ഭാഗികമായി ഭാരം കൊടുത്തു നടക്കാൻ അനുവദിച്ചേക്കാം. ⚠️ ഫിസിയോതെറാപ്പി ആരംഭിക്കുക (കണങ്കാലിന്റെയും മുട്ടിന്റെയും ചലനത്തിനുള്ള വ്യായാമങ്ങൾ).</p>
+             </div>
+        </div>
+
+         <div id="details-stage-4" class="stage-details">
+             <h3>Stage 4: Week 6–12 - Progressive Rehabilitation</h3>
+             <div class="lang-en">
+                 <strong>English Summary:</strong>
+                 <p>Gradually increase walking distance and duration, potentially still using a walker or crutches as advised. Focus on physiotherapy exercises to strengthen ankle and knee muscles. Still avoid full weight bearing unless explicitly cleared by your doctor.</p>
+             </div>
+              <hr>
+             <div class="lang-ml">
+                 <strong>മലയാള സംഗ്രഹം (Malayalam Summary):</strong>
+                 <p>🏃 വാക്കറിന്റെ സഹായത്തോടെ പതുക്കെ നടക്കുന്നത് വർദ്ധിപ്പിക്കുക. 🏋️‍♂️ കണങ്കാലിന്റെയും മുട്ടിന്റെയും പേശികൾക്ക് ബലം നൽകുന്ന വ്യായാമങ്ങൾ ചെയ്യുക. ⚠️ ഡോക്ടർ അനുവദിച്ചിട്ടില്ലെങ്കിൽ പൂർണ്ണമായി ഭാരം കൊടുക്കുന്നത് ഒഴിവാക്കുക.</p>
+             </div>
+         </div>
+
+        <div id="details-stage-5" class="stage-details">
+             <h3>Stage 5: Month 3–6 - Towards Full Weight Bearing</h3>
+             <div class="lang-en">
+                 <strong>English Summary:</strong>
+                 <p>If X-rays confirm good bone union, you will likely be cleared for full weight bearing. Attempt walking without assistive devices (walker/crutches). Continue physiotherapy. Avoid high-impact activities like running or jumping.</p>
+             </div>
+              <hr>
+             <div class="lang-ml">
+                 <strong>മലയാള സംഗ്രഹം (Malayalam Summary):</strong>
+                 <p>🏃‍♂️ X-ray-യിൽ എല്ലുകൾ പൂർണ്ണമായി കൂടിയെന്ന് ഉറപ്പാക്കിയാൽ, പൂർണ്ണമായി ഭാരം കൊടുത്തു നടക്കാം. 👟 വാക്കർ ഇല്ലാതെ നടക്കാൻ ശ്രമിക്കുക. 🚫 ഓട്ടം, ചാട്ടം തുടങ്ങിയ ആഘാതം കൂടിയ പ്രവർത്തികൾ ഒഴിവാക്കുക.</p>
+             </div>
+        </div>
+
+        <div id="details-stage-6" class="stage-details">
+             <h3>Stage 6: 6 Months – 1 Year - Return to Activity & Long Term</h3>
+             <div class="lang-en">
+                 <strong>English Summary:</strong>
+                 <p>Gradual return to most normal activities, including potentially low-impact sports, as advised by your physiotherapist/doctor. The internal fixation hardware (plate/screws) is usually left in place permanently unless it causes specific problems like pain or irritation. Rarely, removal might be considered after 12-18 months if symptomatic.</p>
+             </div>
+              <hr>
+             <div class="lang-ml">
+                 <strong>മലയാള സംഗ്രഹം (Malayalam Summary):</strong>
+                 <p>🧘‍♂️ സാധാരണ ജീവിതത്തിലേക്ക് മടങ്ങുക. ഫിസിയോതെറാപ്പിസ്റ്റ്/ഡോക്ടറുടെ നിർദ്ദേശപ്രകാരം ആഘാതം കുറഞ്ഞ കായിക വിനോദങ്ങളിൽ ഏർപ്പെടാം. ⚙️ ഉള്ളിൽ ഘടിപ്പിച്ച പ്ലേറ്റും സ്ക്രൂകളും സാധാരണയായി സ്ഥിരമായി നിലനിർത്തും (വേദനയോ മറ്റ് പ്രശ്നങ്ങളോ ഉണ്ടാക്കിയില്ലെങ്കിൽ). 🦿 അപൂർവ്വമായി, വേദനയുണ്ടെങ്കിൽ 12–18 മാസങ്ങൾക്ക് ശേഷം ഹാർഡ്‌വെയർ നീക്കം ചെയ്യാൻ പരിഗണിച്ചേക്കാം.</p>
+             </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Embedded JavaScript
+        document.addEventListener('DOMContentLoaded', () => {
+            const stages = document.querySelectorAll('.timeline-stage');
+            const stageDetails = document.querySelectorAll('.stage-details');
+            const progressBar = document.querySelector('.timeline-progress');
+            const totalStages = stages.length;
+            const isVerticalLayout = () => window.innerWidth <= 768; // Check if mobile layout
+
+            // Calculate progress percentage for each stage
+            // Note: We use (index / (totalStages - 1)) for a full bar at the last stage
+            const progressPercentages = Array.from(stages).map((_, index) => {
+                 return totalStages > 1 ? (index / (totalStages - 1)) * 90 : 0; // Multiply by 90 to account for start/end padding (5% each side)
+            });
+
+
+            function setActiveStage(stageElement) {
+                const stageIndex = parseInt(stageElement.dataset.stage) - 1; // Get 0-based index
+
+                 // Remove active class from all stages and details
+                stages.forEach(s => s.classList.remove('active'));
+                stageDetails.forEach(d => d.classList.remove('active'));
+
+                // Add active class to the clicked stage
+                stageElement.classList.add('active');
+
+                // Show the corresponding details
+                const detailsElement = document.getElementById(`details-stage-${stageElement.dataset.stage}`);
+                if (detailsElement) {
+                    detailsElement.classList.add('active');
+                }
+
+                 // Update progress bar
+                 const progress = progressPercentages[stageIndex];
+                 if (isVerticalLayout()) {
+                     progressBar.style.height = `${progress}%`;
+                     progressBar.style.width = '4px'; // Keep width constant for vertical
+                 } else {
+                     progressBar.style.width = `${progress}%`;
+                     progressBar.style.height = '4px'; // Keep height constant for horizontal
+                 }
+            }
+
+            stages.forEach(stage => {
+                stage.addEventListener('click', () => {
+                    setActiveStage(stage);
+                });
+            });
+
+            // Optional: Activate the first stage by default on load
+            if (stages.length > 0) {
+                 setActiveStage(stages[0]);
+            }
+
+             // Re-apply progress bar style on resize if layout changes
+             window.addEventListener('resize', () => {
+                 const activeStage = document.querySelector('.timeline-stage.active');
+                 if (activeStage) {
+                     setActiveStage(activeStage); // Re-trigger to apply correct width/height
+                 }
+             });
+        });
+    </script>
+
+</body>
+</html>
